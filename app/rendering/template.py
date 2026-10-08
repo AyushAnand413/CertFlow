@@ -189,29 +189,35 @@ def render_certificate(
 
     # 9. Footer: Issue Date (Left)
     issue_date = str(certificate_info.get("issue_date", "October 9, 2026"))
-    left_x = 140
-    c.setStrokeColor(color_subtle)
-    c.setLineWidth(1)
-    c.line(left_x - 70, 115, left_x + 70, 115)
-    c.setFont(FONT_LATIN, 10)
+    left_x = 150
+    c.setFont(FONT_LATIN, 8)
+    c.setFillColor(color_subtle)
+    c.drawCentredString(left_x, 115, "DATE OF ISSUE")
+    c.setFont(FONT_LATIN, 11)
     c.setFillColor(color_text)
     c.drawCentredString(left_x, 95, issue_date)
-    c.setFont(FONT_LATIN, 8)
-    c.setFillColor(color_subtle)
-    c.drawCentredString(left_x, 82, "DATE OF ISSUE")
 
-    # 10. Footer: Issuer / Authority (Center)
-    issuer = str(certificate_info.get("issuer", "CertFlow Authority"))
+    # 10. Footer: Authorized Signature & Issuer (Center)
+    issuer = str(certificate_info.get("issuer", "Aereo"))
+    
+    # Stylized script signature rendered ABOVE the signature line
+    c.setFont("Times-Italic", 18)
+    c.setFillColor(colors.HexColor("#1E3A8A"))  # Ink blue signature color
+    c.drawCentredString(center_x, 122, issuer)
+
+    # Signature horizontal line
     c.setStrokeColor(color_subtle)
     c.setLineWidth(1)
-    c.line(center_x - 80, 115, center_x + 80, 115)
+    c.line(center_x - 90, 115, center_x + 90, 115)
+
+    # Title / Signatory label rendered BELOW the signature line
     issuer_font = get_font_for_text(issuer)
-    c.setFont(issuer_font, 11)
+    c.setFont(issuer_font, 10)
     c.setFillColor(color_text)
-    c.drawCentredString(center_x, 95, issuer)
-    c.setFont(FONT_LATIN, 8)
+    c.drawCentredString(center_x, 98, f"{issuer} Authority")
+    c.setFont(FONT_LATIN, 7.5)
     c.setFillColor(color_subtle)
-    c.drawCentredString(center_x, 82, "AUTHORIZED SIGNATURE")
+    c.drawCentredString(center_x, 85, "AUTHORIZED SIGNATURE")
 
     # 11. Footer: Verification QR Code & ID (Right)
     qr_url = f"{verification_base_url.rstrip('/')}/{verification_code}"
