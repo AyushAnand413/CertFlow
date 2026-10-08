@@ -48,7 +48,8 @@ htmlcov/
 
 # Local certificate storage & output
 generated_certs/
-storage/
+/storage/
+samples/
 *.pdf
 !app/rendering/fonts/*.ttf
 
