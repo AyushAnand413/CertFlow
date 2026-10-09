@@ -13,8 +13,8 @@ engine_kwargs = {
 }
 
 if settings.DATABASE_URL.startswith("sqlite"):
-    # SQLite configuration for fast unit testing fallback
-    engine_kwargs["connect_args"] = {"check_same_thread": False}
+    # SQLite configuration for fast unit testing & local fallback with concurrency resilience
+    engine_kwargs["connect_args"] = {"check_same_thread": False, "timeout": 30.0}
     if ":memory:" in settings.DATABASE_URL:
         engine_kwargs["poolclass"] = StaticPool
 else:
@@ -29,7 +29,17 @@ else:
         }
     )
 
+from sqlalchemy import event
+
 engine = create_engine(settings.DATABASE_URL, **engine_kwargs)
+
+if settings.DATABASE_URL.startswith("sqlite") and ":memory:" not in settings.DATABASE_URL:
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
 
 SessionLocal = sessionmaker(
     autocommit=False,

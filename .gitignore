@@ -51,6 +51,9 @@ generated_certs/
 /storage/
 samples/
 *.pdf
+*.zip
+*.db
+*.db-*
 !app/rendering/fonts/*.ttf
 
 # OS files

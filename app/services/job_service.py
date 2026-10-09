@@ -1,6 +1,7 @@
 import uuid
 from typing import Optional, List
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
@@ -12,6 +13,35 @@ from app.schemas.recipient import RecipientSummary
 def generate_verification_code() -> str:
     """Generate a clean, high-entropy unique certificate verification code."""
     return f"CERT-{uuid.uuid4().hex[:8].upper()}"
+
+
+def _build_existing_job_response(existing_job: Job) -> JobCreateResponse:
+    """Constructs JobCreateResponse from an existing Job entity."""
+    total = len(existing_job.certificates)
+    rejected_certs = [
+        RecipientSummary(
+            row_index=c.row_index,
+            name=c.recipient_name,
+            email=c.recipient_email,
+            status=c.status.value,
+            error_code=c.error_code,
+            error_message=c.error_message,
+        )
+        for c in existing_job.certificates
+        if c.status == CertificateStatus.REJECTED
+    ]
+    accepted = total - len(rejected_certs)
+
+    return JobCreateResponse(
+        job_id=existing_job.id,
+        status=existing_job.status.value,
+        total=total,
+        accepted=accepted,
+        rejected=len(rejected_certs),
+        status_url=f"/v1/jobs/{existing_job.id}",
+        created_at=existing_job.created_at,
+        rejected_recipients=rejected_certs,
+    )
 
 
 def create_job_service(
@@ -41,31 +71,7 @@ def create_job_service(
         clean_key = idempotency_key.strip()
         existing_job = db.query(Job).filter(Job.idempotency_key == clean_key).first()
         if existing_job:
-            total = len(existing_job.certificates)
-            rejected_certs = [
-                RecipientSummary(
-                    row_index=c.row_index,
-                    name=c.recipient_name,
-                    email=c.recipient_email,
-                    status=c.status.value,
-                    error_code=c.error_code,
-                    error_message=c.error_message,
-                )
-                for c in existing_job.certificates
-                if c.status == CertificateStatus.REJECTED
-            ]
-            accepted = total - len(rejected_certs)
-
-            return JobCreateResponse(
-                job_id=existing_job.id,
-                status=existing_job.status.value,
-                total=total,
-                accepted=accepted,
-                rejected=len(rejected_certs),
-                status_url=f"/v1/jobs/{existing_job.id}",
-                created_at=existing_job.created_at,
-                rejected_recipients=rejected_certs,
-            )
+            return _build_existing_job_response(existing_job)
 
     # 3. If strict mode is enabled, pre-validate all recipients
     if strict:
@@ -87,7 +93,17 @@ def create_job_service(
         status=JobStatus.QUEUED,
     )
     db.add(job)
-    db.flush()  # Populates job.id before creating child certificates
+    try:
+        db.flush()  # Populates job.id before creating child certificates
+    except IntegrityError:
+        db.rollback()
+        # Another concurrent request with the same idempotency key won the race
+        if idempotency_key:
+            clean_key = idempotency_key.strip()
+            existing_job = db.query(Job).filter(Job.idempotency_key == clean_key).first()
+            if existing_job:
+                return _build_existing_job_response(existing_job)
+        raise
 
     # 5. Process recipients with Partial Success logic
     cert_rows: List[Certificate] = []
@@ -138,9 +154,19 @@ def create_job_service(
     if accepted_count == 0 and len(rejected_summaries) > 0:
         job.status = JobStatus.FAILED
 
-    db.add_all(cert_rows)
-    db.commit()
-    db.refresh(job)
+    try:
+        db.add_all(cert_rows)
+        db.commit()
+        db.refresh(job)
+    except IntegrityError:
+        db.rollback()
+        # Handle concurrent race condition when another request with the same idempotency key won
+        if idempotency_key:
+            clean_key = idempotency_key.strip()
+            existing_job = db.query(Job).filter(Job.idempotency_key == clean_key).first()
+            if existing_job:
+                return _build_existing_job_response(existing_job)
+        raise
 
     return JobCreateResponse(
         job_id=job.id,
