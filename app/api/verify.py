@@ -1,3 +1,4 @@
+from html import escape as html_escape
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
@@ -25,13 +26,19 @@ def verify_certificate(
     accept_header = request.headers.get("accept", "")
     if "text/html" in accept_header:
         if result.valid:
-            html = f"""
+            safe_name = html_escape(result.recipient_name or "")
+            safe_event = html_escape(result.event_name or "")
+            safe_issuer = html_escape(result.issuer or "")
+            safe_date = html_escape(result.issue_date or "")
+            safe_code = html_escape(result.verification_code or "")
+
+            html_content = f"""
             <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Verified Certificate — {result.recipient_name}</title>
+                <title>Verified Certificate — {safe_name}</title>
                 <style>
                     body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0F172A; color: #F8FAFC; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; box-sizing: border-box; }}
                     .card {{ background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }}
@@ -49,12 +56,12 @@ def verify_certificate(
             <body>
                 <div class="card">
                     <div class="badge">&#10003; OFFICIAL CERTIFICATE VERIFIED</div>
-                    <h1>{result.recipient_name}</h1>
-                    <div class="event">{result.event_name}</div>
+                    <h1>{safe_name}</h1>
+                    <div class="event">{safe_event}</div>
                     <div class="detail-box">
-                        <div class="detail-row"><span class="label">Issuing Authority:</span><span class="value">{result.issuer}</span></div>
-                        <div class="detail-row"><span class="label">Date of Issue:</span><span class="value">{result.issue_date}</span></div>
-                        <div class="detail-row"><span class="label">Certificate ID:</span><span class="value">{result.verification_code}</span></div>
+                        <div class="detail-row"><span class="label">Issuing Authority:</span><span class="value">{safe_issuer}</span></div>
+                        <div class="detail-row"><span class="label">Date of Issue:</span><span class="value">{safe_date}</span></div>
+                        <div class="detail-row"><span class="label">Certificate ID:</span><span class="value">{safe_code}</span></div>
                         <div class="detail-row"><span class="label">Status:</span><span class="value" style="color:#34D399;">AUTHENTIC</span></div>
                     </div>
                     <div class="footer">Issued and secured by Aereo Credential Engine</div>
@@ -62,9 +69,10 @@ def verify_certificate(
             </body>
             </html>
             """
-            return HTMLResponse(content=html, status_code=200)
+            return HTMLResponse(content=html_content, status_code=200)
         else:
-            html = f"""
+            safe_invalid_code = html_escape(code)
+            invalid_html = f"""
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -85,12 +93,12 @@ def verify_certificate(
                     <div class="badge">&#10007; VERIFICATION FAILED</div>
                     <h1>Certificate Not Found</h1>
                     <p>The code below does not correspond to an authentic issued certificate.</p>
-                    <div class="code">{code}</div>
+                    <div class="code">{safe_invalid_code}</div>
                 </div>
             </body>
             </html>
             """
-            return HTMLResponse(content=html, status_code=404)
+            return HTMLResponse(content=invalid_html, status_code=404)
 
     # API / JSON response
     status_code = 200 if result.valid else 404
