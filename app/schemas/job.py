@@ -39,3 +39,26 @@ class JobCreateResponse(BaseModel):
     status_url: str
     created_at: datetime
     rejected_recipients: List[RecipientSummary] = Field(default_factory=list)
+
+
+class JobProgress(BaseModel):
+    """Progress statistics for a bulk certificate generation job."""
+    total: int
+    pending: int
+    processing: int
+    succeeded: int
+    failed: int
+    rejected: int
+    percent_complete: float
+
+
+class JobDetailResponse(BaseModel):
+    """Complete detail and status representation for a job."""
+    job_id: uuid.UUID
+    status: str
+    certificate_info: Dict[str, Any]
+    progress: JobProgress
+    download_url: Optional[str] = None
+    created_at: datetime
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
