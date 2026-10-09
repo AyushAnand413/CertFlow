@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: certflow_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: certflow
+      POSTGRES_PASSWORD: certflow_secret
+      POSTGRES_DB: certflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U certflow -d certflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: certflow_api
+    restart: unless-stopped
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://certflow:certflow_secret@postgres:5432/certflow
+      STORAGE_DIR: /app/storage/certificates
+      VERIFICATION_BASE_URL: http://localhost:8000/verify
+      WORKER_BATCH_SIZE: 50
+      WORKER_LOCK_TIMEOUT_SECONDS: 120
+      WORKER_POLL_INTERVAL_SECONDS: 1.0
+    volumes:
+      - cert_storage:/app/storage/certificates
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build: .
+    container_name: certflow_worker
+    restart: unless-stopped
+    command: ["python", "-m", "app.worker.runner"]
+    environment:
+      DATABASE_URL: postgresql+psycopg2://certflow:certflow_secret@postgres:5432/certflow
+      STORAGE_DIR: /app/storage/certificates
+      VERIFICATION_BASE_URL: http://localhost:8000/verify
+      WORKER_BATCH_SIZE: 50
+      WORKER_LOCK_TIMEOUT_SECONDS: 120
+      WORKER_POLL_INTERVAL_SECONDS: 1.0
+    volumes:
+      - cert_storage:/app/storage/certificates
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  cert_storage:
