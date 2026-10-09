@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.api.jobs import router as jobs_router
+from app.api.certificates import router as certificates_router
+from app.api.verify import router as verify_router
 from app.config import get_settings
 from app.db.models import Base
 from app.db.session import engine
@@ -45,6 +47,8 @@ app.add_middleware(
 
 # Register API routers
 app.include_router(jobs_router)
+app.include_router(certificates_router)
+app.include_router(verify_router)
 
 
 @app.get("/", tags=["General"])
