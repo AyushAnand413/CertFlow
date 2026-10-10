@@ -38,7 +38,9 @@ def verify_certificate(
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Verified Certificate — {safe_name} | CertFlow</title>
+                <title>Verified Certificate - {safe_name} | CertFlow</title>
+                <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+                <link rel="shortcut icon" href="/favicon.ico" />
                 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
                 <style>
                     * {{ box-sizing: border-box; }}
@@ -68,7 +70,7 @@ def verify_certificate(
             <body>
                 <header class="navbar">
                     <a href="/dashboard/" class="brand">
-                        <div class="brand-icon">&#9733;</div>
+                        <div class="brand-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
                         <div>Cert<span>Flow</span></div>
                     </a>
                     <a href="/dashboard/" class="nav-btn">&larr; Back to Certificate Maker</a>
@@ -101,6 +103,8 @@ def verify_certificate(
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Invalid Certificate | CertFlow</title>
+                <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+                <link rel="shortcut icon" href="/favicon.ico" />
                 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
                 <style>
                     * {{ box-sizing: border-box; }}
@@ -122,7 +126,7 @@ def verify_certificate(
             <body>
                 <header class="navbar">
                     <a href="/dashboard/" class="brand">
-                        <div class="brand-icon">&#9733;</div>
+                        <div class="brand-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
                         <div>Cert<span>Flow</span></div>
                     </a>
                     <a href="/dashboard/" class="nav-btn">&larr; Back to Certificate Maker</a>

@@ -2,7 +2,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -17,6 +17,7 @@ from app.db.session import engine
 
 settings = get_settings()
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+FAVICON_PATH = FRONTEND_DIR / "favicon.svg"
 
 
 @asynccontextmanager
@@ -57,6 +58,13 @@ app.include_router(verify_router)
 # Mount the interactive frontend dashboard
 if FRONTEND_DIR.exists():
     app.mount("/dashboard", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="dashboard")
+
+
+@app.get("/favicon.svg", include_in_schema=False)
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    """Serve the CertFlow purple award SVG favicon for browser tabs."""
+    return FileResponse(str(FAVICON_PATH), media_type="image/svg+xml")
 
 
 @app.get("/", tags=["General"])
@@ -105,6 +113,8 @@ def health_check(request: Request, format: str | None = None, db: Session = Depe
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CertFlow - System Status & API Overview</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -123,11 +133,13 @@ def health_check(request: Request, format: str | None = None, db: Session = Depe
             padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid #e2e8f0;
             flex-wrap: wrap; gap: 12px;
         }}
-        .brand {{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; font-weight: 800; font-size: 1.25rem; }}
+        .brand {{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0f172a; font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em; }}
+        .brand-accent {{ color: #7c3aed; }}
         .brand-icon {{
-            width: 36px; height: 36px; border-radius: 10px;
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800;
+            width: 38px; height: 38px; border-radius: 10px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
         }}
         .nav-links {{ display: flex; gap: 10px; flex-wrap: wrap; }}
         .btn {{
@@ -199,8 +211,10 @@ def health_check(request: Request, format: str | None = None, db: Session = Depe
     <div class="container">
         <nav class="nav">
             <a href="/dashboard/" class="brand">
-                <span class="brand-icon">C</span>
-                <span>CertFlow Status</span>
+                <span class="brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                </span>
+                <span>Cert<span class="brand-accent">Flow</span> Status</span>
             </a>
             <div class="nav-links">
                 <a href="/dashboard/" class="btn btn-primary">Open Web Dashboard</a>
