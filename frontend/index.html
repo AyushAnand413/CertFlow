@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CertFlow — Free Online Certificate Maker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Clean Styles -->
+    <link rel="stylesheet" href="/dashboard/css/styles.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-white text-gray-900 antialiased">
+
+    <!-- ===================================================================
+         1. CLEAN CLIENT NAVBAR (Canva / Bannerbear Style)
+         =================================================================== -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-md shadow-purple-600/20">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                </div>
+                <span class="text-2xl font-extrabold tracking-tight text-gray-900">
+                    Cert<span class="text-purple-600">Flow</span>
+                </span>
+            </a>
+
+            <!-- Center Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600">
+                <button onclick="openGeneratorMode('single')" class="hover:text-purple-600 transition">Single Certificate</button>
+                <button onclick="openGeneratorMode('bulk')" class="hover:text-purple-600 transition">Bulk Generator</button>
+                <a href="#results-section" class="hover:text-purple-600 transition">Downloads</a>
+                <a href="#verify-section" class="hover:text-purple-600 transition">Verify Certificate</a>
+            </nav>
+
+            <!-- Right CTA Buttons -->
+            <div class="flex items-center gap-3">
+                <button
+                    onclick="openGeneratorMode('bulk')"
+                    class="hidden sm:inline-flex px-4 py-2.5 rounded-lg border border-gray-300 hover:border-gray-900 text-sm font-bold text-gray-800 transition"
+                >
+                    Bulk Upload
+                </button>
+                <button
+                    onclick="openGeneratorMode('single')"
+                    class="btn-purple px-5 py-2.5 rounded-lg text-sm"
+                >
+                    Create a Certificate
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================================================================
+         2. HERO SECTION (Canva + Bannerbear Inspired)
+         =================================================================== -->
+    <section class="bg-gradient-to-b from-[#F3EFFE] via-[#F9F6FF] to-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            <!-- Left Column: Headline & Two Clear Actions -->
+            <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-700 text-xs font-bold tracking-wide uppercase">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span>100% Free — Instant High-Resolution PDF</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-gray-900 tracking-tight leading-[1.12]">
+                    Online Certificate Maker
+                </h1>
+
+                <p class="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    Now everyone can design a professional certificate. Create a single certificate in seconds, or generate hundreds in bulk for your students and events.
+                </p>
+
+                <!-- Two Primary Entry Buttons (Single vs Bulk) -->
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                    <button
+                        onclick="openGeneratorMode('single')"
+                        class="btn-tactile w-full sm:w-auto px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2.5"
+                    >
+                        <span>Create a Certificate Now</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+
+                    <button
+                        onclick="openGeneratorMode('bulk')"
+                        class="w-full sm:w-auto px-7 py-4 rounded-xl bg-white hover:bg-gray-50 text-gray-900 font-bold text-base border-2 border-gray-900 flex items-center justify-center gap-2.5 transition"
+                    >
+                        <i data-lucide="layers" class="w-5 h-5 text-purple-600"></i>
+                        <span>Bulk Certificate Maker</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center lg:justify-start gap-6 pt-2 text-xs font-semibold text-gray-500">
+                    <span class="flex items-center gap-1.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                        No design skills needed
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                        Download in PDF or ZIP
+                    </span>
+                </div>
+            </div>
+
+            <!-- Right Column: Showcase Certificate Card -->
+            <div class="lg:col-span-6">
+                <div class="bg-[#ECE6FA] p-6 sm:p-8 rounded-3xl shadow-inner">
+                    <div class="cert-preview-shell cert-theme-royal">
+                        <div class="cert-frame-outer">
+                            <div class="cert-frame-inner">
+                                <div class="ornament tl"></div>
+                                <div class="ornament tr"></div>
+                                <div class="ornament bl"></div>
+                                <div class="ornament br"></div>
+
+                                <div class="pt-1">
+                                    <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#C5A059]">
+                                        AEREO ACADEMY
+                                    </div>
+                                    <div class="font-serif-display text-xl sm:text-2xl font-bold text-[#0B192C] mt-1">
+                                        Certificate of Appreciation
+                                    </div>
+                                    <div class="w-20 h-[1.5px] bg-[#C5A059] mx-auto mt-1.5"></div>
+                                </div>
+
+                                <div class="my-auto py-2">
+                                    <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">
+                                        THIS IS PRESENTED TO
+                                    </div>
+                                    <div class="font-script text-3xl sm:text-4xl text-[#B48327] my-1">
+                                        Osmond Pillard
+                                    </div>
+                                    <div class="text-[11px] text-gray-600 max-w-xs mx-auto">
+                                        for outstanding leadership and completion of the Autonomous Flight Systems Program
+                                    </div>
+                                </div>
+
+                                <div class="w-full flex items-end justify-between pt-2 border-t border-gray-200 text-[10px] text-gray-500">
+                                    <div class="text-left">
+                                        <div class="font-bold text-gray-800">October 10, 2026</div>
+                                        <div class="text-[8px] uppercase tracking-wider">Date</div>
+                                    </div>
+                                    <div class="gold-ribbon-seal">SEAL</div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-gray-800">Verified QR</div>
+                                        <div class="text-[8px] uppercase tracking-wider text-emerald-600">Authentic PDF</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 4 Feature Highlights Strip (Like Canva Screenshot 1) -->
+        <div class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200/70 grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="wand-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-sm text-gray-900">Easy Instant Editor</div>
+                    <div class="text-xs text-gray-500">Type & preview live on screen</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-sm text-gray-900">Single or Bulk Mode</div>
+                    <div class="text-xs text-gray-500">Create 1 or 500+ certificates at once</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="file-check-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-sm text-gray-900">High-Res Vector PDF</div>
+                    <div class="text-xs text-gray-500">Print-ready A4 landscape format</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-sm text-gray-900">Built-in QR Verification</div>
+                    <div class="text-xs text-gray-500">Every certificate is verifiable online</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================================
+         3. MAIN CERTIFICATE GENERATOR (Bannerbear Style — Single & Bulk)
+         =================================================================== -->
+    <section id="generator" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6">
+
+            <!-- Section Heading -->
+            <div class="text-center space-y-3 mb-8">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                    Create Your Certificate
+                </h2>
+                <p class="text-base text-gray-600">
+                    Choose between creating a single certificate or generating a batch in bulk, enter your values, and hit <strong>Create PDF</strong>.
+                </p>
+
+                <!-- TWO OPTIONS SWITCHER: SINGLE vs BULK -->
+                <div class="inline-flex p-1.5 rounded-full bg-gray-100 border border-gray-200 mt-4">
+                    <button
+                        id="tab-btn-single"
+                        onclick="switchGeneratorMode('single')"
+                        class="mode-tab active flex items-center gap-2"
+                    >
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Single Certificate</span>
+                    </button>
+                    <button
+                        id="tab-btn-bulk"
+                        onclick="switchGeneratorMode('bulk')"
+                        class="mode-tab flex items-center gap-2"
+                    >
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Bulk Certificate Maker</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIVE CERTIFICATE PREVIEW (Updates as you type!) -->
+            <div class="mb-10 bg-gray-50 p-5 sm:p-8 rounded-2xl border border-gray-200">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Live Certificate Preview
+                    </span>
+                    <span class="text-xs text-gray-400">A4 Landscape PDF</span>
+                </div>
+
+                <div class="max-w-2xl mx-auto">
+                    <div class="cert-preview-shell cert-theme-royal">
+                        <div class="cert-frame-outer">
+                            <div class="cert-frame-inner">
+                                <div class="ornament tl"></div>
+                                <div class="ornament tr"></div>
+                                <div class="ornament bl"></div>
+                                <div class="ornament br"></div>
+
+                                <div class="pt-1">
+                                    <div id="live-issuer" class="text-[10px] font-bold uppercase tracking-[0.25em] text-[#C5A059]">
+                                        AEREO ACADEMY
+                                    </div>
+                                    <div id="live-title" class="font-serif-display text-xl sm:text-3xl font-bold text-[#0B192C] mt-1">
+                                        Certificate of Excellence
+                                    </div>
+                                    <div class="w-24 h-[1.5px] bg-[#C5A059] mx-auto mt-2"></div>
+                                </div>
+
+                                <div class="my-auto py-3 px-4 w-full">
+                                    <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">
+                                        THIS CERTIFICATE IS PROUDLY PRESENTED TO
+                                    </div>
+                                    <div id="live-name" class="font-serif-display text-2xl sm:text-4xl font-bold text-[#1E3A8A] my-2 pb-1 border-b border-amber-500/40 max-w-md mx-auto truncate">
+                                        Peter Parker
+                                    </div>
+                                    <div id="live-subtitle" class="text-xs sm:text-sm font-medium text-gray-700 mt-2 max-w-lg mx-auto">
+                                        for successfully completing the Autonomous Flight Systems Workshop
+                                    </div>
+                                </div>
+
+                                <div class="w-full flex items-end justify-between pt-3 border-t border-gray-200 text-[10px] text-gray-500">
+                                    <div class="text-left">
+                                        <div id="live-date" class="font-bold text-gray-900">October 10, 2026</div>
+                                        <div class="text-[8px] uppercase tracking-wider">Date of Issue</div>
+                                    </div>
+
+                                    <div class="gold-ribbon-seal">SEAL</div>
+
+                                    <div class="flex items-center gap-1.5 text-right">
+                                        <div>
+                                            <div class="font-bold text-gray-900 text-[9px]">QR VERIFIED</div>
+                                            <div class="text-[8px] text-emerald-600 font-semibold">Authentic</div>
+                                        </div>
+                                        <div class="w-7 h-7 border border-gray-800 p-0.5 bg-white flex items-center justify-center">
+                                            <i data-lucide="qr-code" class="w-5 h-5 text-gray-900"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===========================================================
+                 MODE 1: SINGLE CERTIFICATE FORM (Bannerbear Screenshot 5 Style)
+                 =========================================================== -->
+            <div id="form-single-container">
+                <div class="border-2 border-gray-900 rounded-2xl overflow-hidden shadow-sm">
+
+                    <!-- Field 1: Name -->
+                    <div class="form-field-card">
+                        <label class="block text-base font-bold text-gray-900 mb-2">Name</label>
+                        <input
+                            id="single-name"
+                            type="text"
+                            value="Peter Parker"
+                            oninput="syncPreviewFromSingle()"
+                            placeholder="Name of the awardee"
+                            class="clean-input"
+                        />
+                    </div>
+
+                    <!-- Field 2: Subtitle / Course or Event Name -->
+                    <div class="form-field-card">
+                        <label class="block text-base font-bold text-gray-900 mb-2">Subtitle / Course Name</label>
+                        <input
+                            id="single-subtitle"
+                            type="text"
+                            value="Autonomous Flight Systems Workshop 2026"
+                            oninput="syncPreviewFromSingle()"
+                            placeholder="Appears under the name of the awardee"
+                            class="clean-input"
+                        />
+                    </div>
+
+                    <!-- Field 3: Certificate Title & Issued By -->
+                    <div class="form-field-card grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Certificate Heading</label>
+                            <input
+                                id="single-title"
+                                type="text"
+                                value="Certificate of Excellence"
+                                oninput="syncPreviewFromSingle()"
+                                placeholder="e.g. Certificate of Completion"
+                                class="clean-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Issued By (Organization)</label>
+                            <input
+                                id="single-issuer"
+                                type="text"
+                                value="Aereo Academy"
+                                oninput="syncPreviewFromSingle()"
+                                placeholder="e.g. Aereo Academy"
+                                class="clean-input"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Field 4: Date & Recipient Email -->
+                    <div class="form-field-card grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Date</label>
+                            <input
+                                id="single-date"
+                                type="text"
+                                value="October 10, 2026"
+                                oninput="syncPreviewFromSingle()"
+                                placeholder="e.g. October 10, 2026"
+                                class="clean-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Recipient Email</label>
+                            <input
+                                id="single-email"
+                                type="email"
+                                value="peter.parker@example.com"
+                                placeholder="email@example.com"
+                                class="clean-input"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Submit Footer -->
+                    <div class="p-6 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <span class="text-sm text-gray-600 font-medium">
+                            Ready to generate high-resolution PDF with verification QR code.
+                        </span>
+                        <button
+                            id="btn-create-single"
+                            onclick="createSingleCertificate()"
+                            class="btn-tactile w-full sm:w-auto px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2"
+                        >
+                            <i data-lucide="file-down" class="w-5 h-5"></i>
+                            <span>Create Certificate PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===========================================================
+                 MODE 2: BULK CERTIFICATE MAKER FORM
+                 =========================================================== -->
+            <div id="form-bulk-container" class="hidden">
+                <div class="border-2 border-gray-900 rounded-2xl overflow-hidden shadow-sm">
+
+                    <!-- Step 1: Certificate Details -->
+                    <div class="form-field-card grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Certificate Heading</label>
+                            <input
+                                id="bulk-title"
+                                type="text"
+                                value="Certificate of Excellence"
+                                oninput="syncPreviewFromBulk()"
+                                placeholder="e.g. Certificate of Excellence"
+                                class="clean-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Subtitle / Event Name</label>
+                            <input
+                                id="bulk-subtitle"
+                                type="text"
+                                value="Autonomous Flight Systems Workshop 2026"
+                                oninput="syncPreviewFromBulk()"
+                                placeholder="Course or event name"
+                                class="clean-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Issued By (Organization)</label>
+                            <input
+                                id="bulk-issuer"
+                                type="text"
+                                value="Aereo Academy"
+                                oninput="syncPreviewFromBulk()"
+                                placeholder="Organization name"
+                                class="clean-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-base font-bold text-gray-900 mb-2">Date</label>
+                            <input
+                                id="bulk-date"
+                                type="text"
+                                value="October 10, 2026"
+                                oninput="syncPreviewFromBulk()"
+                                placeholder="Date of issue"
+                                class="clean-input"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recipients List / CSV Import -->
+                    <div class="form-field-card space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <label class="block text-base font-bold text-gray-900">
+                                    Recipients List (<span id="bulk-count-label">0</span> People)
+                                </label>
+                                <p class="text-xs text-gray-500">Add recipients below, upload a CSV file, or load a sample list</p>
+                            </div>
+
+                            <!-- Easy Preset & CSV Buttons -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button
+                                    type="button"
+                                    onclick="loadSampleBulkList(10)"
+                                    class="px-3.5 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold flex items-center gap-1.5 transition"
+                                >
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                    <span>Load 10 Sample Recipients</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onclick="loadSampleBulkList(30)"
+                                    class="px-3.5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold flex items-center gap-1.5 transition"
+                                >
+                                    <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                                    <span>Load 30 Recipients</span>
+                                </button>
+
+                                <!-- Upload CSV Button with Hover Format Popup -->
+                                <div class="csv-hover-wrapper">
+                                    <label id="upload-csv-btn" class="px-3.5 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer transition">
+                                        <input id="csv-file-input" type="file" accept=".csv,.txt" class="hidden" onchange="uploadBulkCsv(event)" />
+                                        <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                                        <span>Upload CSV</span>
+                                    </label>
+
+                                    <!-- Hover Popover Specifying Required CSV Format (Light Theme Matching Dashboard) -->
+                                    <div id="csv-format-popover" class="csv-popover text-left">
+                                        <div class="flex items-center justify-between border-b border-gray-200 pb-2.5 mb-2.5">
+                                            <span class="text-xs font-extrabold text-gray-900 flex items-center gap-1.5">
+                                                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-purple-600"></i>
+                                                Required CSV Format
+                                            </span>
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold">2 Columns</span>
+                                        </div>
+                                        <p class="text-xs text-gray-600 leading-snug mb-2.5">
+                                            Your CSV file must have <strong class="text-gray-900">Name</strong> in Column 1 and a valid <strong class="text-gray-900">Email</strong> in Column 2:
+                                        </p>
+                                        <div class="bg-[#F9F6FF] border border-purple-200 rounded-xl p-3 font-mono text-[11px] text-gray-800 leading-relaxed mb-3">
+                                            <div class="text-purple-700 font-bold border-b border-purple-200/80 pb-1 mb-1">Name, Email</div>
+                                            <div>Peter Parker, peter@aereo.io</div>
+                                            <div>Jane Doe, jane@example.com</div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onclick="downloadSampleCsvTemplate(event)"
+                                            class="btn-tactile w-full py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5"
+                                        >
+                                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                            <span>Download Sample CSV</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invalid CSV / Invalid Email Warning Banner (Hidden when all valid) -->
+                        <div id="csv-invalid-banner" class="hidden p-4 rounded-xl bg-red-50 border-2 border-red-300 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-start gap-2.5">
+                                <i data-lucide="alert-octagon" class="w-5 h-5 text-red-600 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <div id="csv-invalid-title" class="text-sm font-extrabold text-red-800">
+                                        Invalid CSV Rows Detected
+                                    </div>
+                                    <div id="csv-invalid-desc" class="text-xs text-red-700 mt-0.5">
+                                        Some rows do not match the required <strong>Name, Email</strong> format and are marked <strong>INVALID</strong> below.
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onclick="removeInvalidBulkRows()"
+                                class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition shrink-0"
+                            >
+                                Remove Invalid Rows
+                            </button>
+                        </div>
+
+                        <!-- Quick Add Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                            <div class="sm:col-span-5">
+                                <input
+                                    id="bulk-add-name"
+                                    type="text"
+                                    placeholder="Full Name (e.g. Jane Doe)"
+                                    class="clean-input !py-2.5 !text-sm"
+                                    onkeydown="if(event.key==='Enter') addBulkRecipientRow()"
+                                />
+                            </div>
+                            <div class="sm:col-span-5">
+                                <input
+                                    id="bulk-add-email"
+                                    type="email"
+                                    placeholder="Email Address (e.g. jane@example.com)"
+                                    class="clean-input !py-2.5 !text-sm"
+                                    onkeydown="if(event.key==='Enter') addBulkRecipientRow()"
+                                />
+                            </div>
+                            <div class="sm:col-span-2">
+                                <button
+                                    type="button"
+                                    onclick="addBulkRecipientRow()"
+                                    class="w-full h-full py-2.5 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold flex items-center justify-center gap-1 transition"
+                                >
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>Add</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recipients Table -->
+                        <div class="border border-gray-200 rounded-xl overflow-hidden">
+                            <div class="max-h-64 overflow-y-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-500 border-b border-gray-200 sticky top-0">
+                                        <tr>
+                                            <th class="py-3 px-4 w-12">#</th>
+                                            <th class="py-3 px-4">Awardee Name</th>
+                                            <th class="py-3 px-4">Email Address</th>
+                                            <th class="py-3 px-4">Status</th>
+                                            <th class="py-3 px-4 text-right w-20">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bulk-recipients-tbody" class="divide-y divide-gray-100 text-sm">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Submit Footer -->
+                    <div class="p-6 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="clearBulkRecipients()" class="text-xs font-semibold text-gray-500 hover:text-red-600 underline">
+                                Clear List
+                            </button>
+                        </div>
+
+                        <button
+                            id="btn-create-bulk"
+                            onclick="createBulkCertificates()"
+                            class="btn-tactile w-full sm:w-auto px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2"
+                        >
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            <span>Generate All Certificates</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===========================================================
+                 4. GENERATED CERTIFICATES & DOWNLOADS SECTION
+                 =========================================================== -->
+            <div id="results-section" class="mt-12 hidden">
+                <div class="border-2 border-gray-900 rounded-2xl overflow-hidden bg-white shadow-lg">
+                    <!-- Result Banner -->
+                    <div class="p-6 bg-[#FEFCE8] border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2.5">
+                                <span id="result-status-pill" class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-100 text-emerald-800">
+                                    Generating...
+                                </span>
+                                <h3 id="result-heading" class="text-xl font-extrabold text-gray-900">
+                                    Your Certificates
+                                </h3>
+                            </div>
+                            <p id="result-subheading" class="text-sm text-gray-600 mt-1">
+                                Download individual PDFs below or get all certificates in a single ZIP file.
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <button
+                                id="btn-download-all-zip"
+                                onclick="downloadCurrentBatchZip()"
+                                disabled
+                                class="btn-purple px-5 py-3 rounded-xl text-sm flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
+                            >
+                                <i data-lucide="archive" class="w-4 h-4"></i>
+                                <span>Download All (.ZIP)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="px-6 pt-4 pb-2 bg-white">
+                        <div class="flex items-center justify-between text-xs font-bold text-gray-600 mb-1.5">
+                            <span id="progress-status-text">Processing certificates...</span>
+                            <span id="progress-percent-text">0%</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-gray-100 overflow-hidden">
+                            <div id="progress-bar-fill" style="width: 0%" class="h-full bg-emerald-500 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Certificates List -->
+                    <div class="p-6">
+                        <div class="border border-gray-200 rounded-xl overflow-hidden">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-500 border-b border-gray-200">
+                                    <tr>
+                                        <th class="py-3 px-4">Awardee</th>
+                                        <th class="py-3 px-4">Status</th>
+                                        <th class="py-3 px-4">Certificate ID</th>
+                                        <th class="py-3 px-4 text-right">Download</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="generated-certs-tbody" class="divide-y divide-gray-100 text-sm">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================================================
+         5. SIMPLE WHY / HOW IT WORKS SECTION (Bannerbear Screenshot 4 Style)
+         =================================================================== -->
+    <section class="py-16 bg-gray-50 border-t border-b border-gray-200">
+        <div class="max-w-3xl mx-auto px-6 text-center space-y-12">
+            <div class="space-y-3">
+                <h2 class="text-3xl font-extrabold text-gray-900">High Quality Templates</h2>
+                <p class="text-base text-gray-600 leading-relaxed">
+                    Every certificate is rendered in high-resolution vector format — download your certificates and print them at crisp 300 DPI resolution or share them digitally on LinkedIn.
+                </p>
+            </div>
+
+            <div class="space-y-3">
+                <h2 class="text-3xl font-extrabold text-gray-900">No Design Skills Needed</h2>
+                <p class="text-base text-gray-600 leading-relaxed">
+                    If you're an educator, event organizer, or team lead, this certificate maker is built for you. No complex design tools required to create stunning certificates of achievement in seconds.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================================
+         6. VERIFY A CERTIFICATE SECTION
+         =================================================================== -->
+    <section id="verify-section" class="py-16 bg-white">
+        <div class="max-w-2xl mx-auto px-6 text-center space-y-6">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-900">Verify a Certificate</h2>
+            <p class="text-base text-gray-600">
+                Enter the Certificate ID printed at the bottom of any certificate to verify its authenticity.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+                <input
+                    id="verify-code-input"
+                    type="text"
+                    placeholder="e.g. CERT-A1B2C3D4E5F6"
+                    class="clean-input flex-1 font-mono uppercase"
+                    onkeydown="if(event.key==='Enter') verifyCertificateCode()"
+                />
+                <button
+                    onclick="verifyCertificateCode()"
+                    class="px-6 py-3.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm transition shrink-0"
+                >
+                    Verify Certificate
+                </button>
+            </div>
+
+            <div id="verify-output-box" class="hidden text-left"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 bg-[#F9F6FF] border-t border-gray-200 text-gray-600 text-sm">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-gray-900 font-extrabold">
+                <div class="w-7 h-7 rounded-lg bg-purple-600 flex items-center justify-center text-white">
+                    <i data-lucide="award" class="w-4 h-4"></i>
+                </div>
+                <span>Cert<span class="text-purple-600">Flow</span> Online Certificate Maker</span>
+            </div>
+            <div class="text-xs font-medium text-gray-500">
+                High-Resolution PDF & Bulk Certificate Generator
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- App Logic -->
+    <script src="/dashboard/js/app.js"></script>
+</body>
+</html>
