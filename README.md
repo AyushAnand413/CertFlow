@@ -176,7 +176,7 @@ curl -X POST "http://localhost:8000/v1/jobs" \
     "certificate_info": {
       "title": "Professional Drone Pilot Certification",
       "event_name": "Autonomous Flight & Telemetry Workshop",
-      "issuer_name": "Aereo Flight Academy",
+      "issuer": "Aereo Flight Academy",
       "issue_date": "2026-10-10",
       "description": "Completed advanced flight simulations and spatial photogrammetry."
     },
@@ -340,7 +340,7 @@ CertFlow/
 │   ├── main.py               # FastAPI app entrypoint
 │   ├── rendering/            # PDF generation
 │   │   ├── fonts/            # Bundled TrueType fonts (Noto Sans, Devanagari)
-│   │   └── pdf_generator.py  # ReportLab template and QR code renderer
+│   │   └── template.py       # ReportLab template and QR code renderer
 │   ├── schemas/              # Pydantic request/response schemas
 │   ├── services/             # Business logic
 │   │   ├── job_service.py    # Batch ingestion, validation, and idempotency
