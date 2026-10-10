@@ -1,6 +1,9 @@
+from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -13,6 +16,7 @@ from app.db.models import Base
 from app.db.session import engine
 
 settings = get_settings()
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
 
 @asynccontextmanager
@@ -50,13 +54,21 @@ app.include_router(jobs_router)
 app.include_router(certificates_router)
 app.include_router(verify_router)
 
+# Mount the interactive frontend dashboard
+if FRONTEND_DIR.exists():
+    app.mount("/dashboard", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="dashboard")
+
 
 @app.get("/", tags=["General"])
-def root():
-    """Root entrypoint linking to interactive documentation."""
+def root(request: Request):
+    """Root entrypoint redirecting browsers to the SaaS Dashboard and returning JSON for API clients."""
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept and FRONTEND_DIR.exists():
+        return RedirectResponse(url="/dashboard/")
     return {
         "app": settings.APP_NAME,
         "status": "running",
+        "dashboard_url": "/dashboard",
         "docs_url": "/docs",
         "version": "0.1.0",
     }

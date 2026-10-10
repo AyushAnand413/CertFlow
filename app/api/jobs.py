@@ -11,9 +11,23 @@ from app.services.progress import (
     get_job_progress_service,
     get_job_certificates_service,
     retry_failed_certificates_service,
+    list_jobs_service,
 )
 
 router = APIRouter(prefix="/v1/jobs", tags=["Jobs"])
+
+
+@router.get(
+    "",
+    response_model=list[JobDetailResponse],
+    summary="List recent bulk jobs",
+    description="Returns the most recent bulk generation jobs with their live progress summaries.",
+)
+def list_jobs(
+    limit: int = Query(20, ge=1, le=100, description="Maximum number of recent jobs to return"),
+    db: Session = Depends(get_db),
+) -> list[JobDetailResponse]:
+    return list_jobs_service(db=db, limit=limit)
 
 
 @router.post(

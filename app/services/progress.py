@@ -211,3 +211,15 @@ def verify_certificate_service(
         status="VERIFIED",
         completed_at=cert.completed_at,
     )
+
+
+def list_jobs_service(db: Session, limit: int = 20) -> list[JobDetailResponse]:
+    """Returns the most recent bulk jobs with their live progress summaries."""
+    jobs = (
+        db.query(Job)
+        .order_by(Job.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+    return [get_job_progress_service(db=db, job_id=j.id) for j in jobs]
+
