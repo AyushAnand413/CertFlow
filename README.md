@@ -10,23 +10,23 @@ Built for resilience, CertFlow processes large batches of recipients without blo
 
 ```mermaid
 flowchart TD
-    Client["Client / API Consumer"] -->|1. POST /v1/jobs (Idempotent)| API["FastAPI API Server"]
-    API -->|2. Ingest & Validate Rows| DB[("PostgreSQL Database")]
-    API -->|3. HTTP 202 Accepted| Client
+    Client["Client / Web Dashboard"] -->|"1. POST /v1/jobs (Idempotent)"| API["FastAPI API Server"]
+    API -->|"2. Ingest & Validate Rows"| DB[("PostgreSQL Database")]
+    API -->|"3. HTTP 202 Accepted"| Client
 
-    subgraph Background Processing
-        Worker["Worker Runner Daemon"] -->|4. SELECT ... FOR UPDATE SKIP LOCKED| DB
-        Worker -->|5. Render Vector PDF + QR Code| Engine["ReportLab Engine"]
-        Engine -->|6. Save PDF (Local / Cloud)| Storage["Storage Provider"]
-        Worker -->|7. Update Status (Succeeded / Failed)| DB
+    subgraph BackgroundProcessing["Background Processing"]
+        Worker["Worker Runner Daemon"] -->|"4. SELECT ... FOR UPDATE SKIP LOCKED"| DB
+        Worker -->|"5. Render Vector PDF + QR Code"| Engine["ReportLab Engine"]
+        Engine -->|"6. Save PDF (Local / Cloud)"| Storage["Storage Provider"]
+        Worker -->|"7. Update Status (Succeeded / Failed)"| DB
     end
 
-    Client -->|8. Poll GET /v1/jobs/{id}| API
-    Client -->|9. GET /v1/jobs/{id}/download| API
-    API -->|10. Stream Chunks O(1) Memory| Client
+    Client -->|"8. Poll GET /v1/jobs/{id}"| API
+    Client -->|"9. GET /v1/jobs/{id}/download"| API
+    API -->|"10. Stream Chunks O(1) Memory"| Client
     
-    Verifier["Mobile / Browser Scanner"] -->|11. Scan QR -> GET /verify/{code}| API
-    API -->|12. Render Verification Card / JSON| Verifier
+    Verifier["Mobile / Browser Scanner"] -->|"11. Scan QR -> GET /verify/{code}"| API
+    API -->|"12. Render Verification Card / JSON"| Verifier
 ```
 
 ---
@@ -77,6 +77,7 @@ docker compose up --build
 ```
 
 The services will start:
+- **Online Certificate Maker UI (Dashboard):** http://localhost:8000/dashboard/
 - **API Server:** http://localhost:8000
 - **Interactive Swagger Docs:** http://localhost:8000/docs
 - **PostgreSQL Database:** `localhost:5432`
@@ -330,8 +331,13 @@ CertFlow/
 │       └── runner.py         # Atomic SELECT ... FOR UPDATE SKIP LOCKED daemon
 ├── docker-compose.yml        # Multi-container orchestration (Postgres, API, Worker)
 ├── Dockerfile                # Production container definition
+├── frontend/                 # Interactive Client-Side Certificate Maker UI
+│   ├── index.html            # Single & Bulk Certificate Maker studio
+│   ├── css/styles.css        # Light-theme styling & live certificate canvas
+│   └── js/app.js             # Live preview, CSV validator, progress polling
 ├── requirements.txt          # Python dependencies
 ├── scripts/
+│   ├── comprehensive_test_suite.py # 5-phase live E2E & security stress suite
 │   └── demo.py               # End-to-end interactive CLI demonstration
 └── tests/                    # Unit and integration test suite
     ├── test_db.py
