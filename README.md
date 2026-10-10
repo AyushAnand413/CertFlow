@@ -9,24 +9,41 @@ Built for resilience, CertFlow processes large batches of recipients without blo
 ## Architecture Overview
 
 ```mermaid
-flowchart TD
-    Client["Client / Web Dashboard"] -->|"1. POST /v1/jobs (Idempotent)"| API["FastAPI API Server"]
-    API -->|"2. Ingest & Validate Rows"| DB[("PostgreSQL Database")]
-    API -->|"3. HTTP 202 Accepted"| Client
-
-    subgraph BackgroundProcessing["Background Processing"]
-        Worker["Worker Runner Daemon"] -->|"4. SELECT ... FOR UPDATE SKIP LOCKED"| DB
-        Worker -->|"5. Render Vector PDF + QR Code"| Engine["ReportLab Engine"]
-        Engine -->|"6. Save PDF (Local / Cloud)"| Storage["Storage Provider"]
-        Worker -->|"7. Update Status (Succeeded / Failed)"| DB
+flowchart LR
+    subgraph Clients["1. Clients"]
+        Client["Web Dashboard & API Client"]
+        QR["Mobile QR Scanner"]
     end
 
-    Client -->|"8. Poll GET /v1/jobs/{id}"| API
-    Client -->|"9. GET /v1/jobs/{id}/download"| API
-    API -->|"10. Stream Chunks O(1) Memory"| Client
-    
-    Verifier["Mobile / Browser Scanner"] -->|"11. Scan QR -> GET /verify/{code}"| API
-    API -->|"12. Render Verification Card / JSON"| Verifier
+    subgraph FastAPI["2. FastAPI Server"]
+        POST["POST /v1/jobs (Ingest)"]
+        POLL["GET /v1/jobs/{id} (Status)"]
+        DL["GET /download (ZIP Stream)"]
+        VER["GET /verify/{code} (Verify)"]
+    end
+
+    subgraph Data["3. Relational Queue"]
+        DB[("PostgreSQL (Jobs & Certs)")]
+    end
+
+    subgraph Workers["4. Async Worker Pool"]
+        W["Worker Daemon (SKIP LOCKED)"]
+        PDF["ReportLab PDF + QR Engine"]
+        DISK[("PDF File Storage")]
+    end
+
+    Client -->|"1. Submit Batch"| POST
+    POST -->|"Persist Rows"| DB
+    Client -->|"2. Poll Progress"| POLL
+    POLL -->|"Aggregate Status"| DB
+    Client -->|"3. Request ZIP/PDF"| DL
+    QR -->|"4. Verify Code"| VER
+    VER -->|"Lookup Record"| DB
+
+    W -->|"Claim Pending"| DB
+    W -->|"Render Batch"| PDF
+    PDF -->|"Write PDF"| DISK
+    DISK -->|"Stream 64KB Chunks"| DL
 ```
 
 ---
