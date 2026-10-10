@@ -38,34 +38,56 @@ def verify_certificate(
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Verified Certificate — {safe_name}</title>
+                <title>Verified Certificate — {safe_name} | CertFlow</title>
+                <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
                 <style>
-                    body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0F172A; color: #F8FAFC; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; box-sizing: border-box; }}
-                    .card {{ background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }}
-                    .badge {{ background: #065F46; color: #34D399; font-weight: 700; font-size: 13px; letter-spacing: 0.05em; padding: 6px 16px; border-radius: 9999px; display: inline-flex; align-items: center; margin-bottom: 24px; }}
-                    h1 {{ font-size: 24px; margin: 0 0 8px; color: #FFFFFF; }}
-                    .event {{ color: #94A3B8; font-size: 15px; margin-bottom: 24px; }}
-                    .detail-box {{ background: #0F172A; border-radius: 8px; padding: 16px; text-align: left; margin-bottom: 20px; }}
-                    .detail-row {{ display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }}
-                    .detail-row:last-child {{ margin-bottom: 0; }}
-                    .label {{ color: #64748B; }}
-                    .value {{ color: #E2E8F0; font-weight: 600; }}
-                    .footer {{ color: #475569; font-size: 12px; margin-top: 16px; }}
+                    * {{ box-sizing: border-box; }}
+                    body {{ font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(180deg, #F3EFFE 0%, #F9F6FF 45%, #FFFFFF 100%); color: #111827; min-height: 100vh; margin: 0; display: flex; flex-direction: column; }}
+                    .navbar {{ height: 76px; background: rgba(255,255,255,0.92); border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }}
+                    .brand {{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111827; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }}
+                    .brand-icon {{ width: 38px; height: 38px; border-radius: 10px; background: #7C3AED; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 18px; }}
+                    .brand span {{ color: #7C3AED; }}
+                    .nav-btn {{ padding: 10px 18px; border-radius: 10px; background: #FFFFFF; border: 2px solid #111827; color: #111827; font-weight: 700; font-size: 13px; text-decoration: none; transition: all 0.15s ease; }}
+                    .nav-btn:hover {{ background: #F3F4F6; }}
+                    .main {{ flex: 1; display: flex; justify-content: center; align-items: center; padding: 32px 16px; }}
+                    .card {{ background: #FFFFFF; border: 2px solid #111827; border-radius: 24px; padding: 40px 36px; max-width: 520px; width: 100%; box-shadow: 0 8px 0 #111827, 0 20px 40px rgba(17,24,39,0.08); text-align: center; }}
+                    .badge {{ background: #D1FAE5; color: #065F46; border: 1.5px solid #34D399; font-weight: 800; font-size: 12px; letter-spacing: 0.06em; padding: 7px 16px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; }}
+                    h1 {{ font-family: 'Playfair Display', Georgia, serif; font-size: 32px; margin: 0 0 8px; color: #111827; }}
+                    .event {{ color: #4B5563; font-size: 15px; font-weight: 500; margin-bottom: 28px; }}
+                    .detail-box {{ background: #F9F6FF; border: 1.5px solid #E9D5FF; border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 24px; }}
+                    .detail-row {{ display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(216,180,254,0.4); font-size: 13.5px; }}
+                    .detail-row:last-child {{ border-bottom: none; padding-bottom: 0; }}
+                    .detail-row:first-child {{ padding-top: 0; }}
+                    .label {{ color: #6B7280; font-weight: 600; }}
+                    .value {{ color: #111827; font-weight: 700; }}
+                    .cta-btn {{ display: inline-block; width: 100%; padding: 14px 20px; border-radius: 12px; background: #5CE1A6; color: #091E15; font-weight: 800; font-size: 14px; text-decoration: none; border: 2px solid #111827; box-shadow: 0 4px 0 #111827; transition: all 0.15s ease; }}
+                    .cta-btn:hover {{ background: #48D195; transform: translateY(-1px); }}
+                    .footer {{ color: #6B7280; font-size: 12px; font-weight: 500; margin-top: 20px; }}
                 </style>
             </head>
             <body>
-                <div class="card">
-                    <div class="badge">&#10003; OFFICIAL CERTIFICATE VERIFIED</div>
-                    <h1>{safe_name}</h1>
-                    <div class="event">{safe_event}</div>
-                    <div class="detail-box">
-                        <div class="detail-row"><span class="label">Issuing Authority:</span><span class="value">{safe_issuer}</span></div>
-                        <div class="detail-row"><span class="label">Date of Issue:</span><span class="value">{safe_date}</span></div>
-                        <div class="detail-row"><span class="label">Certificate ID:</span><span class="value">{safe_code}</span></div>
-                        <div class="detail-row"><span class="label">Status:</span><span class="value" style="color:#34D399;">AUTHENTIC</span></div>
+                <header class="navbar">
+                    <a href="/dashboard/" class="brand">
+                        <div class="brand-icon">&#9733;</div>
+                        <div>Cert<span>Flow</span></div>
+                    </a>
+                    <a href="/dashboard/" class="nav-btn">&larr; Back to Certificate Maker</a>
+                </header>
+                <main class="main">
+                    <div class="card">
+                        <div class="badge">&#10003; OFFICIAL CERTIFICATE VERIFIED</div>
+                        <h1>{safe_name}</h1>
+                        <div class="event">{safe_event}</div>
+                        <div class="detail-box">
+                            <div class="detail-row"><span class="label">Issuing Authority</span><span class="value">{safe_issuer}</span></div>
+                            <div class="detail-row"><span class="label">Date of Issue</span><span class="value">{safe_date}</span></div>
+                            <div class="detail-row"><span class="label">Certificate ID</span><span class="value" style="font-family:monospace;">{safe_code}</span></div>
+                            <div class="detail-row"><span class="label">Status</span><span class="value" style="color:#059669;">AUTHENTIC</span></div>
+                        </div>
+                        <a href="/dashboard/" class="cta-btn">Create or Verify Another Certificate</a>
+                        <div class="footer">Issued and cryptographically verified by Aereo CertFlow</div>
                     </div>
-                    <div class="footer">Issued and secured by Aereo Credential Engine</div>
-                </div>
+                </main>
             </body>
             </html>
             """
@@ -78,23 +100,42 @@ def verify_certificate(
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Invalid Certificate</title>
+                <title>Invalid Certificate | CertFlow</title>
+                <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
                 <style>
-                    body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0F172A; color: #F8FAFC; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 16px; box-sizing: border-box; }}
-                    .card {{ background: #1E293B; border: 1px solid #7F1D1D; border-radius: 16px; padding: 32px; max-width: 480px; width: 100%; text-align: center; }}
-                    .badge {{ background: #7F1D1D; color: #F87171; font-weight: 700; font-size: 13px; padding: 6px 16px; border-radius: 9999px; display: inline-flex; margin-bottom: 24px; }}
-                    h1 {{ font-size: 22px; color: #FCA5A5; margin-bottom: 12px; }}
-                    p {{ color: #94A3B8; font-size: 14px; margin-bottom: 24px; }}
-                    .code {{ font-family: monospace; background: #0F172A; padding: 8px; border-radius: 6px; color: #E2E8F0; }}
+                    * {{ box-sizing: border-box; }}
+                    body {{ font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(180deg, #FEF2F2 0%, #FFFFFF 100%); color: #111827; min-height: 100vh; margin: 0; display: flex; flex-direction: column; }}
+                    .navbar {{ height: 76px; background: rgba(255,255,255,0.92); border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }}
+                    .brand {{ display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111827; font-weight: 800; font-size: 22px; }}
+                    .brand-icon {{ width: 38px; height: 38px; border-radius: 10px; background: #7C3AED; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 18px; }}
+                    .brand span {{ color: #7C3AED; }}
+                    .nav-btn {{ padding: 10px 18px; border-radius: 10px; background: #FFFFFF; border: 2px solid #111827; color: #111827; font-weight: 700; font-size: 13px; text-decoration: none; }}
+                    .main {{ flex: 1; display: flex; justify-content: center; align-items: center; padding: 32px 16px; }}
+                    .card {{ background: #FFFFFF; border: 2px solid #111827; border-radius: 24px; padding: 40px 36px; max-width: 480px; width: 100%; box-shadow: 0 8px 0 #111827; text-align: center; }}
+                    .badge {{ background: #FEE2E2; color: #991B1B; border: 1.5px solid #F87171; font-weight: 800; font-size: 12px; padding: 7px 16px; border-radius: 9999px; display: inline-flex; margin-bottom: 20px; }}
+                    h1 {{ font-size: 26px; font-weight: 800; color: #111827; margin: 0 0 10px; }}
+                    p {{ color: #4B5563; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }}
+                    .code {{ font-family: monospace; font-weight: 700; background: #FEF2F2; border: 1.5px solid #FECACA; padding: 12px; border-radius: 12px; color: #991B1B; margin-bottom: 24px; }}
+                    .cta-btn {{ display: inline-block; width: 100%; padding: 14px 20px; border-radius: 12px; background: #7C3AED; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none; }}
                 </style>
             </head>
             <body>
-                <div class="card">
-                    <div class="badge">&#10007; VERIFICATION FAILED</div>
-                    <h1>Certificate Not Found</h1>
-                    <p>The code below does not correspond to an authentic issued certificate.</p>
-                    <div class="code">{safe_invalid_code}</div>
-                </div>
+                <header class="navbar">
+                    <a href="/dashboard/" class="brand">
+                        <div class="brand-icon">&#9733;</div>
+                        <div>Cert<span>Flow</span></div>
+                    </a>
+                    <a href="/dashboard/" class="nav-btn">&larr; Back to Certificate Maker</a>
+                </header>
+                <main class="main">
+                    <div class="card">
+                        <div class="badge">&#10007; VERIFICATION FAILED</div>
+                        <h1>Certificate Not Found</h1>
+                        <p>The code below does not correspond to an authentic issued certificate.</p>
+                        <div class="code">{safe_invalid_code}</div>
+                        <a href="/dashboard/#verify-section" class="cta-btn">Try Another Certificate ID</a>
+                    </div>
+                </main>
             </body>
             </html>
             """

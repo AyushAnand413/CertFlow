@@ -1,0 +1,275 @@
+/* ==========================================================================
+   CertFlow — Clean Client-Side Online Certificate Maker (Canva / Bannerbear Style)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Great+Vibes&display=swap');
+
+:root {
+    --primary: #6D28D9;
+    --primary-hover: #5B21B6;
+    --mint-btn: #52B788;
+    --mint-btn-hover: #40916C;
+    --text-main: #111827;
+    --text-muted: #4B5563;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #FFFFFF;
+    color: var(--text-main);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.font-serif-display {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-script {
+    font-family: 'Great Vibes', cursive;
+}
+
+/* Tactile Bannerbear-style CTA Button */
+.btn-tactile {
+    background-color: #5CE1A6;
+    color: #091E15;
+    font-weight: 700;
+    border: 2px solid #111827;
+    box-shadow: 0 4px 0 #111827;
+    transition: all 0.15s ease;
+}
+
+.btn-tactile:hover {
+    background-color: #48D195;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 #111827;
+}
+
+.btn-tactile:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #111827;
+}
+
+/* Canva-style Purple Primary Button */
+.btn-purple {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    box-shadow: 0 8px 20px -4px rgba(124, 58, 237, 0.45);
+    transition: all 0.2s ease;
+}
+
+.btn-purple:hover {
+    background: linear-gradient(135deg, #6D28D9 0%, #5B21B6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px -4px rgba(124, 58, 237, 0.55);
+}
+
+/* Mode Switcher Pill */
+.mode-tab {
+    padding: 0.75rem 1.75rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.925rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.mode-tab.active {
+    background-color: #111827;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(17, 24, 39, 0.18);
+}
+
+.mode-tab:not(.active) {
+    background-color: transparent;
+    color: #4B5563;
+}
+
+.mode-tab:not(.active):hover {
+    color: #111827;
+    background-color: #F3F4F6;
+}
+
+/* Clean Form Inputs (Bannerbear Style) */
+.form-field-card {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    transition: background-color 0.15s ease;
+}
+
+.form-field-card:last-child {
+    border-bottom: none;
+}
+
+.form-field-card:focus-within {
+    background: #FAFAFF;
+}
+
+.clean-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+    color: #111827;
+    background-color: #FFFFFF;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 0.625rem;
+    transition: all 0.15s ease;
+}
+
+.clean-input:focus {
+    outline: none;
+    border-color: #6D28D9;
+    box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.1);
+}
+
+.clean-input::placeholder {
+    color: #9CA3AF;
+}
+
+/* ==========================================================================
+   Live Realistic Certificate Preview Canvas
+   ========================================================================== */
+.cert-preview-shell {
+    width: 100%;
+    aspect-ratio: 1.414 / 1;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(17, 24, 39, 0.12), 0 0 0 1px rgba(17, 24, 39, 0.08);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Theme 1: Classic Royal Navy & Gold */
+.cert-theme-royal .cert-frame-outer {
+    width: 100%;
+    height: 100%;
+    border: 4px solid #0B192C;
+    padding: 6px;
+}
+.cert-theme-royal .cert-frame-inner {
+    width: 100%;
+    height: 100%;
+    border: 1.5px solid #C5A059;
+    background: radial-gradient(circle at center, #FFFFFF 0%, #FDFBF7 100%);
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+/* Corner Ornaments */
+.ornament {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: #C5A059;
+    border-style: solid;
+}
+.ornament.tl { top: 6px; left: 6px; border-width: 2.5px 0 0 2.5px; }
+.ornament.tr { top: 6px; right: 6px; border-width: 2.5px 2.5px 0 0; }
+.ornament.bl { bottom: 6px; left: 6px; border-width: 0 0 2.5px 2.5px; }
+.ornament.br { bottom: 6px; right: 6px; border-width: 0 2.5px 2.5px 0; }
+
+.gold-ribbon-seal {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #FDE68A 0%, #D97706 75%, #92400E 100%);
+    border: 2px dashed #FFFBEB;
+    box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+}
+
+/* Toast Notification */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toast-item {
+    animation: fadeSlideUp 0.22s ease forwards;
+}
+
+/* Upload CSV Hover Popover (Matches Light Dashboard Theme) */
+.csv-hover-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.csv-popover {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 330px;
+    background: #FFFFFF;
+    color: #111827;
+    border: 2px solid #111827;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 5px 0 #111827, 0 16px 32px rgba(17, 24, 39, 0.14);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Invisible hover bridge between button and popover */
+.csv-popover::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 16px;
+}
+
+/* Upward arrow pointing to Upload CSV button */
+.csv-popover::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    right: 28px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #111827 transparent;
+}
+
+.csv-hover-wrapper:hover .csv-popover,
+.csv-hover-wrapper:focus-within .csv-popover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+

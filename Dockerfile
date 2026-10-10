@@ -22,5 +22,6 @@ COPY . .
 # Expose default API port
 EXPOSE 8000
 
-# Default command runs the FastAPI web API server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Default command starts the background worker and FastAPI server (supports Render $PORT)
+CMD ["sh", "-c", "python -m app.worker.runner & uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+
