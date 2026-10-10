@@ -1,8 +1,8 @@
 # CertFlow - Bulk Certificate Generator Backend
 
-CertFlow is an asynchronous backend service for generating, delivering, and verifying PDF certificates in bulk.
+**CertFlow** is a bulk certificate generation and verification system built with FastAPI and PostgreSQL. Organizations can submit hundreds or thousands of recipients in a single request (via REST API or CSV upload) and receive print-ready PDF certificates with embedded QR verification codes.
 
-It accepts batch requests over HTTP, queues recipient rows in PostgreSQL using `SELECT ... FOR UPDATE SKIP LOCKED`, renders vector PDFs in the background with ReportLab, and streams bulk downloads as a ZIP archive in constant memory ($O(1)$ RAM).
+Instead of generating PDFs synchronously during the HTTP request or relying on external brokers like Redis/Celery, CertFlow uses PostgreSQL row-level locking (`FOR UPDATE SKIP LOCKED`) as an atomic background work queue. A single bad row never blocks the rest of a batch, and completed certificates stream directly to the user as a ZIP archive in constant memory without spiking server RAM.
 
 ## Live Deployment
 
